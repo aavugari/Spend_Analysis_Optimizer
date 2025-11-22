@@ -4,7 +4,7 @@ function extractBankTransactionsWife() {
 
   // Add headers if missing
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(["Bank", "Date", "Amount", "Transaction Info", "Transaction Type", "Category", "Month", "Year"]);
+    sheet.appendRow(["Bank", "Date", "Amount", "Transaction Info", "Transaction Type", "Category", "Card Last 4", "Month", "Year"]);
   }
 
   // Process last 24 hours only
@@ -73,13 +73,16 @@ function extractSBITransactions(sheet, searchDate) {
         formattedDate = new Date(`20${parts[2]}`, parts[1] - 1, parts[0]);
       }
 
+      var cardMatch = body.match(/ending (\d{4})/i);
+      var cardLast4 = cardMatch ? cardMatch[1] : "Unknown";
+      
       var transactionType = "Debit";
       var category = getCategoryWife(transactionInfo);
       var month = Utilities.formatDate(formattedDate, Session.getScriptTimeZone(), "MMMM");
       var year = Utilities.formatDate(formattedDate, Session.getScriptTimeZone(), "yyyy");
 
       if (sheet && amount !== "Not Found") {
-        var row = ["SBI", formattedDate, amount, transactionInfo, transactionType, category, month, year];
+        var row = ["SBI", formattedDate, amount, transactionInfo, transactionType, category, cardLast4, month, year];
         sheet.appendRow(row);
       }
     });
@@ -88,6 +91,7 @@ function extractSBITransactions(sheet, searchDate) {
 
 function extractAmexTransactionsWife(sheet, searchDate) {
   var threads = GmailApp.search('from:AmericanExpress@welcome.americanexpress.com OR from:alerts@americanexpress.com after:' + searchDate);
+  // No thread limit for Amex to capture all transactions
   var messages = GmailApp.getMessagesForThreads(threads);
 
   messages.forEach(thread => {
@@ -100,9 +104,17 @@ function extractAmexTransactionsWife(sheet, searchDate) {
       var dateCutoff = new Date("2025-04-22");
       var amount = "Not Found";
       var transactionInfo = "Not Found";
+      var subject = message.getSubject();
 
-      if (formattedDate >= dateCutoff) {
-        // New format only after 22-April-2025
+      if (formattedDate < dateCutoff && subject.includes("One-Time Password")) {
+        // Old format only before 22-April-2025 (OTP emails)
+        var amountOldMatch = body.match(/INR\s([\d,]+\.\d{2})/i);
+        amount = amountOldMatch ? parseFloat(amountOldMatch[1].replace(/,/g, '')) : "Not Found";
+
+        var infoOldMatch = body.match(/at\s(.*?)\s(?:on|for|is)/i);
+        transactionInfo = infoOldMatch ? infoOldMatch[1].replace(/<\/?[^>]+(>|$)/g, "") : "Not Found";
+      } else if (plainBody.includes("Merchant:")) {
+        // New format after 22-April-2025 (Merchant alerts)
         var merchantMatch = plainBody.match(/Merchant:\s*\n*\s*(.*?)\s*\n/i);
         var amountMatch = plainBody.match(/Amount:\s*\n*INR\s*([\d,]+\.\d{2})/i);
         var dateMatch = plainBody.match(/Date:\s*\n*\s*([0-9]{1,2}\s\w+,\s20\d{2})/i);
@@ -111,21 +123,19 @@ function extractAmexTransactionsWife(sheet, searchDate) {
         if (amountMatch) amount = parseFloat(amountMatch[1].replace(/,/g, ''));
         if (dateMatch) formattedDate = new Date(dateMatch[1]);
       } else {
-        // Old format only before 22-April-2025
-        var amountOldMatch = body.match(/INR\s([\d,]+\.\d{2})/i);
-        amount = amountOldMatch ? parseFloat(amountOldMatch[1].replace(/,/g, '')) : "Not Found";
-
-        var infoOldMatch = body.match(/at\s(.*?)\s(?:on|for|is)/i);
-        transactionInfo = infoOldMatch ? infoOldMatch[1].replace(/<\/?[^>]+(>|$)/g, "") : "Not Found";
+        return;
       }
 
+      var cardMatch = plainBody.match(/Account Ending: (\d{5})/) || body.match(/ending in (\d{5})/);
+      var cardLast4 = cardMatch ? cardMatch[1] : "Unknown";
+      
       var transactionType = "Debit";
       var category = getCategoryWife(transactionInfo);
       var month = Utilities.formatDate(formattedDate, Session.getScriptTimeZone(), "MMMM");
       var year = Utilities.formatDate(formattedDate, Session.getScriptTimeZone(), "yyyy");
 
       if (sheet && amount !== "Not Found") {
-        var row = ["Amex", formattedDate, amount, transactionInfo, transactionType, category, month, year];
+        var row = ["Amex", formattedDate, amount, transactionInfo, transactionType, category, cardLast4, month, year];
         sheet.appendRow(row);
       }
     });
@@ -155,13 +165,16 @@ function extractHDFCTransactionsWife(sheet, searchDate) {
         formattedDate = new Date(parts[2], parts[1] - 1, parts[0]);
       }
 
+      var cardMatch = body.match(/ending (\d{4})/) || body.match(/\*\*(\d{4})/);
+      var cardLast4 = cardMatch ? cardMatch[1] : "Unknown";
+      
       var transactionType = "Debit";
       var category = getCategoryWife(transactionInfo);
       var month = Utilities.formatDate(formattedDate, Session.getScriptTimeZone(), "MMMM");
       var year = Utilities.formatDate(formattedDate, Session.getScriptTimeZone(), "yyyy");
 
       if (sheet && amount !== "Not Found") {
-        var row = ["HDFC", formattedDate, amount, transactionInfo, transactionType, category, month, year];
+        var row = ["HDFC", formattedDate, amount, transactionInfo, transactionType, category, cardLast4, month, year];
         sheet.appendRow(row);
       }
     });
@@ -206,7 +219,6 @@ function getCategoryWife(transactionInfo) {
     "Nykaa": "Shopping",
     "Myntra": "Shopping",
     "BigBasket": "Grocery",
-    "Retail": "Grocery",
     "LICIOUS": "Food",
     "Food": "Food",
     "Dadus": "Food",
@@ -224,7 +236,10 @@ function getCategoryWife(transactionInfo) {
     "Car E GH": "Car Maintainance",
     "Automotive": "Car Maintainance",
     "ABR CAFE": "Cafe Niloufer",
-    "CAFE NILOUFER": "Cafe Niloufer"
+    "CAFE NILOUFER": "Cafe Niloufer",
+    "Apple": "Subscription",
+    "Green Trends": "Grooming",
+    "Fresh": "Grocery"
   };
 
   for (const keyword in categories) {

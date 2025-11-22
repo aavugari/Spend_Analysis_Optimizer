@@ -3,7 +3,7 @@
 // ============================================================================
 
 const CONFIG = {
-  HEADERS: ["Bank", "Date", "Amount", "Transaction Info", "Transaction Type", "Category", "Month", "Year"],
+  HEADERS: ["Bank", "Date", "Amount", "Transaction Info", "Transaction Type", "Category", "Card Last 4", "Month", "Year"],
   DATE_FORMAT: "MM/dd/yyyy",
   TIMEZONE: Session.getScriptTimeZone(),
   AMEX_FORMAT_CUTOFF: new Date("2025-04-01T00:00:00"),
@@ -17,11 +17,15 @@ const BASE_CATEGORIES = {
   "Zomato": "Food",
   "Zepto": "Grocery",
   "Blinkit": "Grocery",
+  "Instamart": "Grocery",
   "Ratnadeep": "Grocery",
+  "Retail": "Grocery",
   "Apollo": "Health",
+  "Health": "Health",
   "Netflix": "Netflix",
   "YouTube": "Youtube Subscription",
   "Google": "Google Subscription",
+  "Apple": "Subscription",
   "Fuel": "Fuel",
   "HP PAY": "Fuel",
   "Petrol": "Fuel",
@@ -48,7 +52,10 @@ const BASE_CATEGORIES = {
   "CAFE NILOUFER": "Cafe Niloufer",
   "Dadus": "Food",
   "Pista": "Food",
-  "Mixture": "Food"
+  "Mixture": "Food",
+  "Green Trends": "Grooming",
+
+  "Fresh": "Grocery"
 };
 
 function extractBankTransactions() {
@@ -120,6 +127,7 @@ function removeRecentTransactions(sheet, cutoffDate) {
 
 function extractICICITransactions(sheet, cutoffDate) {
   var threads = GmailApp.search('from:credit_cards@icicibank.com OR from:alerts@icicibank.com subject:"Transaction alert"');
+  threads = threads.slice(0, 50);
   var messages = GmailApp.getMessagesForThreads(threads);
   var count = 0;
 
@@ -136,9 +144,12 @@ function extractICICITransactions(sheet, cutoffDate) {
         var infoMatch = body.match(/Info:\s(.*?)\./);
         var transactionInfo = infoMatch ? infoMatch[1].trim() : null;
         
+        var cardMatch = body.match(/Credit Card XX(\d{4})/);
+        var cardLast4 = cardMatch ? cardMatch[1] : "Unknown";
+        
         var transactionType = (body.includes("credited") || body.includes("Payment received")) ? "Credit" : "Debit";
         
-        if (appendIfValid(sheet, "ICICI", messageDate, amount, transactionInfo, transactionType)) {
+        if (appendIfValid(sheet, "ICICI", messageDate, amount, transactionInfo, transactionType, cardLast4)) {
           count++;
         }
       } catch (error) {
@@ -152,6 +163,7 @@ function extractICICITransactions(sheet, cutoffDate) {
 
 function extractHDFCTransactions(sheet, cutoffDate) {
   var threads = GmailApp.search('from:alerts@hdfcbank.net subject:("Alert : Update on your HDFC Bank Credit Card" OR "debited via Credit Card")');
+  threads = threads.slice(0, 50);
   var messages = GmailApp.getMessagesForThreads(threads);
   var count = 0;
 
@@ -170,9 +182,12 @@ function extractHDFCTransactions(sheet, cutoffDate) {
                        body.match(/for\s(.+?)\son/i);
         var transactionInfo = infoMatch ? infoMatch[1].trim() : null;
         
+        var cardMatch = body.match(/Credit Card ending (\d{4})/) || body.match(/Credit Card \*\*(\d{4})/);
+        var cardLast4 = cardMatch ? cardMatch[1] : "Unknown";
+        
         var transactionType = (body.includes("credited") || body.includes("Payment received")) ? "Credit" : "Debit";
         
-        if (appendIfValid(sheet, "HDFC", messageDate, amount, transactionInfo, transactionType)) {
+        if (appendIfValid(sheet, "HDFC", messageDate, amount, transactionInfo, transactionType, cardLast4)) {
           count++;
         }
       } catch (error) {
@@ -185,7 +200,8 @@ function extractHDFCTransactions(sheet, cutoffDate) {
 }
 
 function extractAmexTransactions(sheet, cutoffDate) {
-  var threads = GmailApp.search('(from:AmericanExpress@welcome.americanexpress.com OR from:alerts@americanexpress.com)');
+  var threads = GmailApp.search('from:AmericanExpress@welcome.americanexpress.com OR from:alerts@americanexpress.com');
+  threads = threads.slice(0, 50);
   var messages = GmailApp.getMessagesForThreads(threads);
   var count = 0;
 
@@ -203,12 +219,15 @@ function extractAmexTransactions(sheet, cutoffDate) {
         var transactionInfo = null;
         var finalDate = messageDate;
         
+        var cardMatch = plainBody.match(/Account Ending: (\d{5})/) || body.match(/ending in (\d{5})/);
+        var cardLast4 = cardMatch ? cardMatch[1] : "Unknown";
+        
         if (messageDate < CONFIG.AMEX_FORMAT_CUTOFF && subject.includes("One-Time Password")) {
           var amountMatch = body.match(/INR\s([\d,]+\.\d{2})/);
           amount = amountMatch ? parseFloat(amountMatch[1].replace(/,/g, "")) : null;
           
-          var infoMatch = body.match(/at\s([A-Za-z0-9\s\-\&\.\,]+)/i);
-          transactionInfo = infoMatch ? infoMatch[1].trim() : "Unknown Merchant";
+          var infoMatch = body.match(/at\s(.*?)\s(?:on|for|is)/i);
+          transactionInfo = infoMatch ? infoMatch[1].replace(/<\/?[^>]+(>|$)/g, "") : "Unknown Merchant";
           
         } else if (plainBody.includes("Merchant:")) {
           var merchantMatch = plainBody.match(/Merchant:\s*\n*\s*(.*?)\s*\n/i);
@@ -225,7 +244,7 @@ function extractAmexTransactions(sheet, cutoffDate) {
           return;
         }
         
-        if (appendIfValid(sheet, "Amex", finalDate, amount, transactionInfo, "Debit")) {
+        if (appendIfValid(sheet, "Amex", finalDate, amount, transactionInfo, "Debit", cardLast4)) {
           count++;
         }
       } catch (error) {
@@ -237,16 +256,17 @@ function extractAmexTransactions(sheet, cutoffDate) {
   return count;
 }
 
-function appendIfValid(sheet, bank, date, amount, transactionInfo, transactionType) {
+function appendIfValid(sheet, bank, date, amount, transactionInfo, transactionType, cardLast4) {
   if (!sheet || !date || !amount || isNaN(amount)) return false;
   
   if (!transactionInfo) transactionInfo = "Unknown";
+  if (!cardLast4) cardLast4 = "Unknown";
   
   var category = getCategory(transactionInfo);
   var month = Utilities.formatDate(date, CONFIG.TIMEZONE, "MMMM");
   var year = Utilities.formatDate(date, CONFIG.TIMEZONE, "yyyy");
   
-  sheet.appendRow([bank, date, amount, transactionInfo, transactionType, category, month, year]);
+  sheet.appendRow([bank, date, amount, transactionInfo, transactionType, category, cardLast4, month, year]);
   return true;
 }
 
@@ -274,6 +294,11 @@ function getCategory(transactionInfo) {
 function extractICICIOnly() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getActiveSheet();
+  
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(CONFIG.HEADERS);
+  }
+  
   var cutoffDate = new Date("2025-01-01T00:00:00");
   
   var count = extractICICITransactions(sheet, cutoffDate);
@@ -284,6 +309,11 @@ function extractICICIOnly() {
 function extractHDFCOnly() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getActiveSheet();
+  
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(CONFIG.HEADERS);
+  }
+  
   var cutoffDate = new Date("2025-01-01T00:00:00");
   
   var count = extractHDFCTransactions(sheet, cutoffDate);
@@ -294,6 +324,11 @@ function extractHDFCOnly() {
 function extractAmexOnly() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getActiveSheet();
+  
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(CONFIG.HEADERS);
+  }
+  
   var cutoffDate = new Date("2025-01-01T00:00:00");
   
   var count = extractAmexTransactions(sheet, cutoffDate);

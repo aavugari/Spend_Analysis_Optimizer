@@ -18,7 +18,7 @@ const MERGER_CONFIG = {
     sourceLabel: "Wife"
   },
   MASTER_SHEET_NAME: "Master",
-  HEADERS_WITH_SOURCE: ["Bank", "Date", "Amount", "Transaction Info", "Transaction Type", "Category", "Month", "Year", "Source"]
+  HEADERS_WITH_SOURCE: ["Bank", "Date", "Amount", "Transaction Info", "Transaction Type", "Category", "Card Last 4", "Month", "Year", "Source"]
 };
 
 /**
@@ -53,7 +53,7 @@ function mergeTransactionSheets() {
     
     mergedCounts["Total"] = mergedCounts["Surya"] + mergedCounts["Wife"];
     
-    logExecutionSummary("TRANSACTION MERGER", mergedCounts);
+    Logger.log("✅ TRANSACTION MERGER completed: Surya=" + mergedCounts["Surya"] + ", Wife=" + mergedCounts["Wife"] + ", Total=" + mergedCounts["Total"]);
     
   } catch (error) {
     Logger.log("❌ CRITICAL ERROR in mergeTransactionSheets: " + error.toString());
@@ -160,8 +160,8 @@ function mergeDataFromSheet(sheetUrl, sheetName, sourceLabel, masterSheet) {
  * Validate transaction row
  */
 function isValidTransactionRow(row) {
-  // Check if row has minimum required fields
-  if (!row || row.length < 8) return false;
+  // Check if row has minimum required fields (now 9 columns)
+  if (!row || row.length < 9) return false;
   
   // Check if essential fields are not empty
   var bank = row[0];
@@ -219,7 +219,7 @@ function calculateDailySummary(masterSheet) {
     return { totalToday: 0, totalMTD: 0, todayBreakdown: {}, mtdBreakdown: {} };
   }
   
-  var data = masterSheet.getRange(2, 1, lastRow - 1, 9).getValues();
+  var data = masterSheet.getRange(2, 1, lastRow - 1, 10).getValues();
   
   var todayBreakdown = {};
   var mtdBreakdown = {};
@@ -234,7 +234,7 @@ function calculateDailySummary(masterSheet) {
       var monthYear = Utilities.formatDate(date, Session.getScriptTimeZone(), "MMMM yyyy");
       var amount = parseFloat(row[2]);
       var type = row[4];
-      var person = row[8]; // Source column
+      var person = row[9]; // Source column (now at index 9)
       
       // Only process debit transactions
       if (type === "Debit" && !isNaN(amount)) {
