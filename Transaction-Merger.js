@@ -8,12 +8,12 @@
 const MERGER_CONFIG = {
   // TODO: Move these to PropertiesService.getScriptProperties()
   SURYA_SHEET: {
-    url: "https://docs.google.com/spreadsheets/d/1s_cfiMUSFuxgtmIpdFGGEnbocTGBQ9c-P0coI9xF4Fc/edit",
+    url: "YOUR_SURYA_SHEET_URL_HERE",
     sheetName: "Sheet1",
     sourceLabel: "Surya"
   },
   NAMITA_SHEET: {
-    url: "https://docs.google.com/spreadsheets/d/1LTPFRty4aUBRa-MyGmKAre7-JDQoIAYjHGEtHJe2ITQ/edit", 
+    url: "YOUR_NAMITA_SHEET_URL_HERE", 
     sheetName: "Sheet1",
     sourceLabel: "Wife"
   },
@@ -309,8 +309,8 @@ function buildTelegramMessage(summaryData) {
 function sendTelegramMessage(message) {
   try {
     // TODO: Move these to PropertiesService for security
-    var token = "8332772870:AAFQI7LRx8hDQOxHOf5YNA8hu1G2tOnpLkw"; // SECURITY: Move to PropertiesService
-    var chatId = "7627724547"; // SECURITY: Move to PropertiesService
+    var token = "YOUR_TELEGRAM_BOT_TOKEN_HERE"; // SECURITY: Move to PropertiesService
+    var chatId = "YOUR_TELEGRAM_CHAT_ID_HERE"; // SECURITY: Move to PropertiesService
     
     var url = "https://api.telegram.org/bot" + token + "/sendMessage";
     var payload = {
@@ -350,10 +350,10 @@ function setupSecureConfig() {
   
   // Store Telegram credentials securely
   properties.setProperties({
-    'TELEGRAM_BOT_TOKEN': '8332772870:AAFQI7LRx8hDQOxHOf5YNA8hu1G2tOnpLkw',
-    'TELEGRAM_CHAT_ID': '7627724547',
-    'SURYA_SHEET_URL': 'https://docs.google.com/spreadsheets/d/1s_cfiMUSFuxgtmIpdFGGEnbocTGBQ9c-P0coI9xF4Fc/edit',
-    'NAMITA_SHEET_URL': 'https://docs.google.com/spreadsheets/d/1LTPFRty4aUBRa-MyGmKAre7-JDQoIAYjHGEtHJe2ITQ/edit'
+    'TELEGRAM_BOT_TOKEN': 'YOUR_TELEGRAM_BOT_TOKEN_HERE',
+    'TELEGRAM_CHAT_ID': 'YOUR_TELEGRAM_CHAT_ID_HERE',
+    'SURYA_SHEET_URL': 'YOUR_SURYA_SHEET_URL_HERE',
+    'NAMITA_SHEET_URL': 'YOUR_NAMITA_SHEET_URL_HERE'
   });
   
   Logger.log("✅ Secure configuration stored");
