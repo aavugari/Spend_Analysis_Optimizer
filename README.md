@@ -8,10 +8,13 @@ A comprehensive personal finance tracking system that automatically extracts tra
 - **Multi-Bank Support**: ICICI, HDFC, SBI, and American Express
 - **Dual-User System**: Separate processing for multiple family members
 - **Smart Categorization**: Automatic transaction categorization with merchant detection
-- **Budget Tracking**: Monthly budget limits with real-time alerts
-- **Telegram Notifications**: Comprehensive spending summaries and alerts
+- **Smart Goal Tracking**: 6-month baseline with progressive reduction targets
+- **Budget Alerts**: 75% threshold warnings with contextual messaging
+- **Telegram Notifications**: Enhanced summaries with goal progress and insights
 - **Google Drive Backup**: Automated data backup and recovery
 - **Performance Optimized**: Bank-wise extraction to avoid timeout issues
+- **Anomaly Detection**: Unusual spending pattern alerts
+- **Weekly Analysis**: Performance scoring and actionable insights
 
 ## 📁 System Architecture
 
@@ -101,43 +104,91 @@ extractBankTransactions() // All banks (24-hour mode)
 - Incremental processing avoids re-processing existing data
 - Memory-efficient message handling
 
-## 💰 Budget Tracking
+## 🎯 Smart Goal Tracking System
 
-### Monthly Limits
+### Progressive Reduction Goals
+- **6-Month Baseline**: Calculates average spending from last 6 months
+- **Phase 1 (Months 1-3)**: 10% reduction target
+- **Phase 2 (Months 4-6)**: 20% reduction target  
+- **Phase 3 (Months 7-9)**: 30% reduction target
+
+### Smart Alert System
+- **Budget Warnings**: 75% threshold alerts with remaining amount
+- **Critical Alerts**: Budget exceeded notifications
+- **Anomaly Detection**: Unusual spending pattern identification
+- **Positive Reinforcement**: Savings achievement celebrations
+- **Contextual Messages**: Motivational, educational, and actionable advice
+
+### Goal Progress Tracking
 ```javascript
-const BUDGET_LIMITS = {
-    'Food': 15000,
-    'Grocery': 8000, 
-    'Shopping': 5000,
-    'Transport': 3000,
-    'Entertainment': 2000
-};
+// Visual progress indicators
+🟢 On Track: < 75% of budget used
+🟡 Warning: 75-100% of budget used
+🔴 Critical: > 100% of budget used
+📊 Anomaly: Spending faster than expected
 ```
 
-### Alert System
-- **75% Warning**: Budget approaching limit
-- **100% Alert**: Budget exceeded
-- **Weekly Summary**: Spending breakdown
-- **Family Overview**: Combined spending analysis
+## 📱 Enhanced Telegram Notifications
 
-## 📱 Telegram Notifications
+### Daily Summaries (Enhanced)
+- **Today's Spending**: Person and bank-wise breakdown
+- **Month-to-Date**: Running monthly totals
+- **Goal Progress**: Visual progress bars with emojis
+- **Smart Alerts**: Top 3 most important budget alerts
+- **Contextual Messages**: Personalized motivational advice
+- **Total Savings**: Monthly savings compared to baseline
 
-### Daily Alerts
-- New transaction notifications
-- Budget status updates
-- Spending summaries
+### Weekly Analysis Reports
+- **Weekly Spending**: Person and category breakdowns
+- **Goal Performance**: Monthly goal status overview
+- **Overall Score**: Percentage of goals on track
+- **Weekly Insights**: AI-driven spending recommendations
+- **Top Categories**: Highest spending areas identification
+- **Performance Trends**: Spending velocity analysis
 
-### Weekly Reports
-- Category-wise breakdown
-- Family spending comparison
-- Budget utilization analysis
+### Smart Contextual Messaging
+- **Motivational**: "Excellent! You've saved ₹2,500 this month!"
+- **Educational**: "All categories are on track! Keep up the great work!"
+- **Actionable**: "Focus on reducing spending in 2 categories to get back on track"
+- **Seasonal**: "Festival season - plan your spending to stay within goals!"
 
-### Monthly Summary
-- Total spending overview
-- Category performance
-- Budget vs actual analysis
+## 🚀 Smart Goal Tracking Usage
 
-## 🔄 Data Flow
+### Enhanced Daily Summary
+```javascript
+sendDailySummaryTelegram();
+// Now includes:
+// - 6-month baseline calculation
+// - Progressive reduction goals (10% → 20% → 30%)
+// - Smart budget alerts with contextual messaging
+// - Goal progress visualization with emojis
+// - Total savings tracking
+```
+
+### Weekly Analysis Report
+```javascript
+sendWeeklySummaryTelegram();
+// Comprehensive analysis with:
+// - Weekly spending breakdown by person/category
+// - Goal performance scoring
+// - AI-driven insights and recommendations
+// - Performance trend analysis
+// - Optimization opportunities
+```
+
+### Goal Management Functions
+```javascript
+// Calculate current goals based on 6-month baseline
+var goals = calculateGoalTargets(masterSheet);
+
+// Get current spending by category
+var spending = getCurrentMonthSpending(masterSheet);
+
+// Generate smart alerts and contextual messages
+var alerts = generateSmartAlerts(goals, spending);
+```
+
+## 🔄 Enhanced Data Flow
 
 ```mermaid
 graph TD
@@ -145,8 +196,10 @@ graph TD
     B --> C[Individual Sheets]
     C --> D[Transaction Merger]
     D --> E[Master Sheet]
-    D --> F[Telegram Notifications]
-    D --> G[Google Drive Backup]
+    D --> F[Goal Calculation]
+    F --> G[Smart Alerts]
+    G --> H[Enhanced Telegram Notifications]
+    D --> I[Google Drive Backup]
 ```
 
 ## 🛠️ Technical Details
@@ -185,19 +238,27 @@ graph TD
 - `.gitignore` prevents credential exposure
 - Telegram token validation
 
-## 📊 Analytics Capabilities
+## 📊 Advanced Analytics & Insights
 
-### Spending Insights
-- Monthly trend analysis
-- Category-wise distribution
-- Bank-wise spending patterns
-- Family member comparison
+### Smart Goal Analytics
+- **6-Month Baseline Calculation**: Historical spending averages
+- **Progressive Target Setting**: Phased reduction goals
+- **Real-time Progress Tracking**: Daily goal monitoring
+- **Performance Scoring**: Overall achievement percentage
+- **Savings Calculation**: Baseline vs actual comparison
 
-### Budget Performance
-- Real-time budget utilization
-- Category overspend alerts
-- Monthly budget vs actual
-- Savings opportunities identification
+### Spending Pattern Analysis
+- **Anomaly Detection**: Unusual spending identification
+- **Velocity Tracking**: Spending rate vs expected pace
+- **Category Performance**: Goal achievement by category
+- **Monthly Projections**: End-of-month spending forecasts
+- **Trend Analysis**: Week-over-week comparisons
+
+### Contextual Intelligence
+- **Seasonal Adjustments**: Festival and holiday considerations
+- **Behavioral Insights**: Spending trigger identification
+- **Optimization Opportunities**: Category-specific recommendations
+- **Achievement Recognition**: Milestone celebrations
 
 ## 🚨 Troubleshooting
 
@@ -215,6 +276,7 @@ graph TD
 
 ## 📈 Version History
 
+- **v2.1.0**: Smart goal tracking and alert system with progressive reduction targets
 - **v2.0.1**: Dashboard removal, documentation update
 - **v2.0.0**: Major refactoring with performance optimization
 - **v1.0.0**: Initial Gmail extraction system
@@ -230,6 +292,28 @@ graph TD
 ## 📄 License
 
 Personal use project - modify as needed for your requirements.
+
+## 🎯 Expected Outcomes & Benefits
+
+### Smart Goal System Achievements
+- **Realistic Targets**: Goals based on actual 6-month spending history
+- **Gradual Reduction**: Sustainable 10-30% reduction over 9 months
+- **Behavioral Change**: Positive reinforcement through contextual guidance
+- **Automated Monitoring**: Daily progress tracking without manual intervention
+- **Intelligent Alerts**: Context-aware notifications with actionable advice
+
+### Projected Savings Timeline
+- **Month 1-3 (Phase 1)**: 10-15% expense reduction in top categories
+- **Month 4-6 (Phase 2)**: 20-25% overall expense reduction
+- **Month 7-9 (Phase 3)**: 30% reduction with sustainable spending habits
+- **Savings Potential**: ₹15,000-25,000 monthly savings for average users
+
+### Smart Features Impact
+- **75% Threshold Alerts**: Prevent budget overruns before they happen
+- **Anomaly Detection**: Catch unusual spending patterns early
+- **Weekly Insights**: Data-driven recommendations for optimization
+- **Contextual Messaging**: Motivational support for goal achievement
+- **Performance Scoring**: Gamified approach to expense management
 
 ## 🆘 Support
 
