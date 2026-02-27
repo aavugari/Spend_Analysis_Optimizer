@@ -3,7 +3,7 @@
 ## 🎯 What's Been Improved
 
 ### ✅ **Preserved All Existing Logic**
-- **Separate scripts** for Surya (Husband) and Namita (Wife) (account-specific Gmail access)
+- **Separate scripts** for Husband and Wife (account-specific Gmail access)
 - **Amex format change logic** preserved for both accounts (April 22, 2025 cutoff)
 - **All bank-specific parsing** patterns maintained
 - **Category mappings** kept separate for each person
@@ -21,8 +21,8 @@
 ```
 Spend_Analysis_Optimizer/
 ├── shared-utils.js                    # Common utilities (NEW)
-├── Transactions-Surya-Refactored.js   # Surya (Husband) transactions (IMPROVED)
-├── Transactions-Namita-Refactored.js  # Namita (Wife) transactions (IMPROVED)
+├── Transactions-Surya-Refactored.js   # Husband transactions (IMPROVED)
+├── Transactions-Namita-Refactored.js  # Wife transactions (IMPROVED)
 ├── Transaction-Merger-Refactored.js   # Data merger (IMPROVED)
 ├── REFACTORING_GUIDE.md               # This guide (NEW)
 └── [Original files kept for backup]
@@ -34,14 +34,14 @@ Spend_Analysis_Optimizer/
 1. **Copy `shared-utils.js`** to your Google Apps Script project
 2. **Test it works** by running any function from the file
 
-### Step 2: Replace Surya's Script
-1. **Backup your current** `Transactions Surya.js`
+### Step 2: Replace Husband's Script
+1. **Backup your current** `Transactions-Surya.js`
 2. **Replace with** `Transactions-Surya-Refactored.js`
 3. **Rename main function** if needed: `extractBankTransactionsSurya()`
 4. **Test extraction** - should work exactly the same but with better logging
 
-### Step 3: Replace Namita's Script  
-1. **Backup your current** `Transactions Namita.js`
+### Step 3: Replace Wife's Script  
+1. **Backup your current** `Transactions-Namita.js`
 2. **Replace with** `Transactions-Namita-Refactored.js`
 3. **Keep function name** as `extractBankTransactionsWife()`
 4. **Test extraction** - should work exactly the same
@@ -65,12 +65,12 @@ const MERGER_CONFIG = {
   SURYA_SHEET: {
     url: "YOUR_ACTUAL_SHEET_URL_HERE",  // Update this
     sheetName: "Sheet1",
-    sourceLabel: "Surya (Husband)"
+    sourceLabel: "Husband"
   },
   NAMITA_SHEET: {
     url: "YOUR_ACTUAL_SHEET_URL_HERE",  // Update this
     sheetName: "Sheet1", 
-    sourceLabel: "Namita (Wife)"
+    sourceLabel: "Wife"
   }
 };
 ```
@@ -91,7 +91,7 @@ const MERGER_CONFIG = {
 
 ### 2. **Improved Logging**
 ```javascript
-🚦 Running Surya's extraction in mode: DAILY
+🚦 Running Husband's extraction in mode: DAILY
 🔍 Searching Gmail: from:credit_cards@icicibank.com...
 📧 Found 15 threads
 ✅ Transaction added: ICICI - 1250.00 - Amazon
@@ -113,7 +113,7 @@ const MERGER_CONFIG = {
 
 ## 🧪 Testing Checklist
 
-### Test Surya's Script
+### Test Husband's Script
 - [ ] Run `extractBankTransactionsSurya()`
 - [ ] Check ICICI transactions are extracted
 - [ ] Check HDFC transactions are extracted  
@@ -121,7 +121,7 @@ const MERGER_CONFIG = {
 - [ ] Verify categorization works
 - [ ] Check execution summary in logs
 
-### Test Namita's Script
+### Test Wife's Script
 - [ ] Run `extractBankTransactionsWife()`
 - [ ] Check SBI transactions are extracted
 - [ ] Check HDFC transactions are extracted

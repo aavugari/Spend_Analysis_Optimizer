@@ -6,7 +6,7 @@ A comprehensive personal finance tracking system that automatically extracts tra
 
 - **Automated Transaction Extraction**: Parses bank transaction emails from Gmail
 - **Multi-Bank Support**: ICICI, HDFC, SBI, and American Express
-- **Dual-User System**: Separate processing for multiple family members (Surya – husband, Namita – wife)
+- **Dual-User System**: Separate processing for multiple family members (Husband and Wife)
 - **Smart Categorization**: Automatic transaction categorization with merchant detection
 - **Smart Goal Tracking**: 6-month baseline with progressive reduction targets
 - **Budget Alerts**: 75% threshold warnings with contextual messaging
@@ -20,8 +20,8 @@ A comprehensive personal finance tracking system that automatically extracts tra
 
 ```
 Spend_Analysis_Optimizer/
-├── Transactions-Surya.js      # Surya (Husband) transaction extractor
-├── Transactions-Namita.js     # Namita (Wife) transaction extractor  
+├── Transactions-Surya.js      # Husband transaction extractor
+├── Transactions-Namita.js     # Wife transaction extractor  
 ├── Transaction-Merger.js      # Data consolidation and notifications
 ├── config.template.js         # Configuration template
 ├── REFACTORING_GUIDE.md      # Technical implementation details
@@ -43,8 +43,8 @@ Edit `config.js` with your credentials:
 
 ### 2. Google Apps Script Deployment
 1. Create new Google Apps Script projects for each user
-2. Deploy `Transactions-Surya.js` in Surya's (husband’s) Gmail account
-3. Deploy `Transactions-Namita.js` in Namita's (wife’s) Gmail account  
+2. Deploy `Transactions-Surya.js` in the Husband's Gmail account
+3. Deploy `Transactions-Namita.js` in the Wife's Gmail account  
 4. Deploy `Transaction-Merger.js` in either account
 
 ### 3. Google Sheets Setup
@@ -73,15 +73,15 @@ Date | Amount | Info | Category | Bank | Person | Card Last 4 | Merchant | Sub-C
 ### State Bank of India (SBI)
 - **Format**: Account transaction alerts
 - **Parsing**: Amount, transaction details
-- **User**: Namita (Wife) only
+- **User**: Wife only
 
 ### American Express
 - **Format**: Dual format support (pre/post April 2025)
 - **Parsing**: Amount, merchant, card details
 - **Thread Limit**: Unlimited (complete transaction capture)
 - **Cutoff Dates**: 
--  - Surya (Husband): April 1, 2025
--  - Namita (Wife): April 22, 2025
+-  - Husband: April 1, 2025
+-  - Wife: April 22, 2025
 
 ## ⚡ Performance Features
 
@@ -131,7 +131,7 @@ extractBankTransactions() // All banks (24-hour mode)
 ## 📱 Enhanced Telegram Notifications
 
 ### Daily Summaries (Enhanced)
-- **Today's Spending**: Person and bank-wise breakdown (Surya vs Namita)
+- **Today's Spending**: Person and bank-wise breakdown (Husband vs Wife)
 - **Month-to-Date**: Running monthly totals
 - **Goal Progress**: Visual progress bars with emojis
 - **Smart Alerts**: Top 3 most important budget alerts
@@ -223,7 +223,7 @@ graph TD
     info: "Transaction description", 
     category: "Food",
     bank: "ICICI",
-    person: "Surya",      // or "Namita"
+    person: "Husband",      // or "Wife"
     cardLast4: "1234",
     merchant: "Merchant name",
     subCategory: "Restaurants",

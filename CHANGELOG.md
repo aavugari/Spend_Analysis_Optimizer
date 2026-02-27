@@ -14,7 +14,7 @@
 #### 🚀 New Features
 - **Bank-wise Extraction Functions**: Separate functions for each bank to avoid timeouts
 - **Enhanced Telegram Notifications**: Comprehensive budget tracking and family spending breakdown
-- **Amex Format Logic**: Dual format support with April cutoff dates (Surya: April 1, Namita: April 22)
+- **Amex Format Logic**: Dual format support with April cutoff dates (Husband: April 1, Wife: April 22)
 - **24-Hour Processing**: Incremental data collection to avoid refreshing existing data
 - **Backup Functionality**: Automated Google Drive backups with error handling
 
@@ -30,8 +30,8 @@
 - **Category Mapping**: Improved transaction categorization for both users
 
 #### 📁 File Structure
-- `Transactions-Surya.js` - Surya (Husband) transaction extractor (ICICI, HDFC, Amex)
-- `Transactions-Namita.js` - Namita (Wife) transaction extractor (SBI, HDFC, Amex)  
+- `Transactions-Surya.js` - Husband transaction extractor (ICICI, HDFC, Amex)
+- `Transactions-Namita.js` - Wife transaction extractor (SBI, HDFC, Amex)  
 - `Transaction-Merger.js` - Enhanced merger with Telegram notifications and backup
 - `REFACTORING_GUIDE.md` - Technical documentation and implementation details
 
