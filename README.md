@@ -20,8 +20,8 @@ A comprehensive personal finance tracking system that automatically extracts tra
 
 ```
 Spend_Analysis_Optimizer/
-├── Transactions-Surya.js      # Husband transaction extractor
-├── Transactions-Namita.js     # Wife transaction extractor  
+├── Transactions-Husband.js    # Husband transaction extractor
+├── Transactions-Wife.js       # Wife transaction extractor  
 ├── Transaction-Merger.js      # Data consolidation and notifications
 ├── config.template.js         # Configuration template
 ├── REFACTORING_GUIDE.md      # Technical implementation details
@@ -43,8 +43,8 @@ Edit `config.js` with your credentials:
 
 ### 2. Google Apps Script Deployment
 1. Create new Google Apps Script projects for each user
-2. Deploy `Transactions-Surya.js` in the Husband's Gmail account
-3. Deploy `Transactions-Namita.js` in the Wife's Gmail account  
+2. Deploy `Transactions-Husband.js` in the Husband's Gmail account
+3. Deploy `Transactions-Wife.js` in the Wife's Gmail account  
 4. Deploy `Transaction-Merger.js` in either account
 
 ### 3. Google Sheets Setup

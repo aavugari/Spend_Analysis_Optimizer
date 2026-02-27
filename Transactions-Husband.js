@@ -1,5 +1,5 @@
 // ============================================================================
-// SURYA (HUSBAND) TRANSACTION EXTRACTOR - CONSOLIDATED VERSION
+// HUSBAND TRANSACTION EXTRACTOR - CONSOLIDATED VERSION
 // ============================================================================
 
 const CONFIG = {

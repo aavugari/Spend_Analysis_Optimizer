@@ -30,8 +30,8 @@
 - **Category Mapping**: Improved transaction categorization for both users
 
 #### 📁 File Structure
-- `Transactions-Surya.js` - Husband transaction extractor (ICICI, HDFC, Amex)
-- `Transactions-Namita.js` - Wife transaction extractor (SBI, HDFC, Amex)  
+- `Transactions-Husband.js` - Husband transaction extractor (ICICI, HDFC, Amex)
+- `Transactions-Wife.js` - Wife transaction extractor (SBI, HDFC, Amex)  
 - `Transaction-Merger.js` - Enhanced merger with Telegram notifications and backup
 - `REFACTORING_GUIDE.md` - Technical documentation and implementation details
 

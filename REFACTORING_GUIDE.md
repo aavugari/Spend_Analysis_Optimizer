@@ -21,8 +21,8 @@
 ```
 Spend_Analysis_Optimizer/
 ├── shared-utils.js                    # Common utilities (NEW)
-├── Transactions-Surya-Refactored.js   # Husband transactions (IMPROVED)
-├── Transactions-Namita-Refactored.js  # Wife transactions (IMPROVED)
+├── Transactions-Husband-Refactored.js # Husband transactions (IMPROVED)
+├── Transactions-Wife-Refactored.js    # Wife transactions (IMPROVED)
 ├── Transaction-Merger-Refactored.js   # Data merger (IMPROVED)
 ├── REFACTORING_GUIDE.md               # This guide (NEW)
 └── [Original files kept for backup]
@@ -35,14 +35,14 @@ Spend_Analysis_Optimizer/
 2. **Test it works** by running any function from the file
 
 ### Step 2: Replace Husband's Script
-1. **Backup your current** `Transactions-Surya.js`
-2. **Replace with** `Transactions-Surya-Refactored.js`
+1. **Backup your current** `Transactions-Husband.js`
+2. **Replace with** `Transactions-Husband-Refactored.js`
 3. **Rename main function** if needed: `extractBankTransactionsSurya()`
 4. **Test extraction** - should work exactly the same but with better logging
 
 ### Step 3: Replace Wife's Script  
-1. **Backup your current** `Transactions-Namita.js`
-2. **Replace with** `Transactions-Namita-Refactored.js`
+1. **Backup your current** `Transactions-Wife.js`
+2. **Replace with** `Transactions-Wife-Refactored.js`
 3. **Keep function name** as `extractBankTransactionsWife()`
 4. **Test extraction** - should work exactly the same
 
