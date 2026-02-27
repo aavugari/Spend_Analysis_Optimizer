@@ -3,7 +3,7 @@
 ## 🎯 What's Been Improved
 
 ### ✅ **Preserved All Existing Logic**
-- **Separate scripts** for Surya and Namita (account-specific Gmail access)
+- **Separate scripts** for Surya (Husband) and Namita (Wife) (account-specific Gmail access)
 - **Amex format change logic** preserved for both accounts (April 22, 2025 cutoff)
 - **All bank-specific parsing** patterns maintained
 - **Category mappings** kept separate for each person
@@ -21,10 +21,10 @@
 ```
 Spend_Analysis_Optimizer/
 ├── shared-utils.js                    # Common utilities (NEW)
-├── Transactions-Surya-Refactored.js   # Your transactions (IMPROVED)
-├── Transactions-Namita-Refactored.js  # Wife's transactions (IMPROVED)
+├── Transactions-Surya-Refactored.js   # Surya (Husband) transactions (IMPROVED)
+├── Transactions-Namita-Refactored.js  # Namita (Wife) transactions (IMPROVED)
 ├── Transaction-Merger-Refactored.js   # Data merger (IMPROVED)
-├── REFACTORING_GUIDE.md              # This guide (NEW)
+├── REFACTORING_GUIDE.md               # This guide (NEW)
 └── [Original files kept for backup]
 ```
 
@@ -65,12 +65,12 @@ const MERGER_CONFIG = {
   SURYA_SHEET: {
     url: "YOUR_ACTUAL_SHEET_URL_HERE",  // Update this
     sheetName: "Sheet1",
-    sourceLabel: "Surya"
+    sourceLabel: "Surya (Husband)"
   },
   NAMITA_SHEET: {
     url: "YOUR_ACTUAL_SHEET_URL_HERE",  // Update this
     sheetName: "Sheet1", 
-    sourceLabel: "Wife"
+    sourceLabel: "Namita (Wife)"
   }
 };
 ```
@@ -90,7 +90,7 @@ const MERGER_CONFIG = {
 - **Detailed error messages** for troubleshooting
 
 ### 2. **Improved Logging**
-```
+```javascript
 🚦 Running Surya's extraction in mode: DAILY
 🔍 Searching Gmail: from:credit_cards@icicibank.com...
 📧 Found 15 threads
@@ -140,7 +140,7 @@ const MERGER_CONFIG = {
 
 ### Before (Insecure)
 ```javascript
-var token = "8332772870:AAFQI7LRx8hDQOxHOf5YNA8hu1G2tOnpLkw"; // Exposed!
+var token = "YOUR_TELEGRAM_BOT_TOKEN_HERE"; // Exposed!
 ```
 
 ### After (Secure)
@@ -153,16 +153,16 @@ var token = config.telegramToken; // Hidden in PropertiesService
 
 ### Common Issues & Solutions
 
-**Issue**: "initializeSheet is not defined"
+**Issue**: "initializeSheet is not defined"  
 **Solution**: Make sure `shared-utils.js` is deployed first
 
 **Issue**: "No transactions extracted"  
 **Solution**: Check Gmail search permissions and date filters
 
-**Issue**: "Telegram not working"
+**Issue**: "Telegram not working"  
 **Solution**: Verify bot token and chat ID in secure config
 
-**Issue**: "Amex format not working"
+**Issue**: "Amex format not working"  
 **Solution**: Check date cutoff logic - should be April 22, 2025
 
 ## 📈 Performance Improvements
@@ -201,3 +201,4 @@ If you encounter any issues:
 ---
 
 **Remember**: All your existing logic is preserved - this is just a cleaner, more reliable version of what you already have! 🎉
+

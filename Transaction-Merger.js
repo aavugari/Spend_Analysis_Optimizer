@@ -10,12 +10,12 @@ const MERGER_CONFIG = {
   SURYA_SHEET: {
     url: "YOUR_SURYA_SHEET_URL_HERE",
     sheetName: "Sheet1",
-    sourceLabel: "Surya"
+    sourceLabel: "Surya (Husband)"
   },
   NAMITA_SHEET: {
     url: "YOUR_NAMITA_SHEET_URL_HERE", 
     sheetName: "Sheet1",
-    sourceLabel: "Wife"
+    sourceLabel: "Namita (Wife)"
   },
   MASTER_SHEET_NAME: "Master",
   HEADERS_WITH_SOURCE: ["Bank", "Date", "Amount", "Transaction Info", "Transaction Type", "Category", "Card Last 4", "Month", "Year", "Source"]
@@ -30,30 +30,37 @@ function mergeTransactionSheets() {
     
     var masterSheet = initializeMasterSheet();
     var mergedCounts = {
-      "Surya": 0,
-      "Wife": 0,
+      "Surya (Husband)": 0,
+      "Namita (Wife)": 0,
       "Total": 0
     };
     
-    // Merge Surya's data
-    mergedCounts["Surya"] = mergeDataFromSheet(
+    // Merge Surya (Husband)'s data
+    mergedCounts["Surya (Husband)"] = mergeDataFromSheet(
       MERGER_CONFIG.SURYA_SHEET.url,
       MERGER_CONFIG.SURYA_SHEET.sheetName,
       MERGER_CONFIG.SURYA_SHEET.sourceLabel,
       masterSheet
     );
     
-    // Merge Namita's data
-    mergedCounts["Wife"] = mergeDataFromSheet(
+    // Merge Namita (Wife)'s data
+    mergedCounts["Namita (Wife)"] = mergeDataFromSheet(
       MERGER_CONFIG.NAMITA_SHEET.url,
       MERGER_CONFIG.NAMITA_SHEET.sheetName,
       MERGER_CONFIG.NAMITA_SHEET.sourceLabel,
       masterSheet
     );
     
-    mergedCounts["Total"] = mergedCounts["Surya"] + mergedCounts["Wife"];
+    mergedCounts["Total"] = mergedCounts["Surya (Husband)"] + mergedCounts["Namita (Wife)"];
     
-    Logger.log("✅ TRANSACTION MERGER completed: Surya=" + mergedCounts["Surya"] + ", Wife=" + mergedCounts["Wife"] + ", Total=" + mergedCounts["Total"]);
+    Logger.log(
+      "✅ TRANSACTION MERGER completed: Surya (Husband)=" +
+      mergedCounts["Surya (Husband)"] +
+      ", Namita (Wife)=" +
+      mergedCounts["Namita (Wife)"] +
+      ", Total=" +
+      mergedCounts["Total"]
+    );
     
   } catch (error) {
     Logger.log("❌ CRITICAL ERROR in mergeTransactionSheets: " + error.toString());
